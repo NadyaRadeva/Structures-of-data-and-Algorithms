@@ -1,0 +1,70 @@
+// https://www.hackerrank.com/contests/2023-2024-2/challenges/cycles-components/problem
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool dfs(
+    int current,
+    int parent,
+    vector<vector<int>>& graph,
+    vector<bool>& visited
+) {
+    visited[current] = true;
+
+    for (int neighbor : graph[current]) {
+        if (neighbor == parent) {
+            continue;
+        }
+
+        if (visited[neighbor]) {
+            return true;
+        }
+
+        if (dfs(neighbor, current, graph, visited)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+int main() {
+    int T;
+    cin >> T;
+
+    while (T--) {
+        int n, m;
+        cin >> n >> m;
+
+        vector<vector<int>> graph(n);
+
+        for (int i = 0; i < m; i++) {
+            int u, v;
+            cin >> u >> v;
+
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+
+        vector<bool> visited(n, false);
+
+        int componentsWithCycle = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (visited[i]) {
+                continue;
+            }
+
+            bool hasCycle = dfs(i, -1, graph, visited);
+
+            if (hasCycle) {
+                componentsWithCycle++;
+            }
+        }
+
+        cout << componentsWithCycle << endl;
+    }
+
+    return 0;
+}
